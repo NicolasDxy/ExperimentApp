@@ -32,7 +32,7 @@ public class EntranceActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.experimentBtn1:
-                Intent intent = new Intent(this, ExperimentActivity.class);
+                Intent intent = new Intent(this, ArcExperimentActivity.class);
                 startActivity(intent);
 
         }

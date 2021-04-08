@@ -6,24 +6,21 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
 import com.example.experiment.R;
 import com.example.experiment.View.ExperimentImageView;
-import com.example.experiment.View.PointsView;
 import com.example.experiment.data.PointsInfo;
 import com.example.experiment.data.SinglePoint;
 
-public class ExperimentActivity extends Activity {
+public class ArcExperimentActivity extends Activity {
 
     private ExperimentImageView mImageView;
     private PointsInfo mPointsInfo;
 
-    public ExperimentActivity() {
+    public ArcExperimentActivity() {
         mPointsInfo = new PointsInfo();
     }
 
@@ -36,13 +33,16 @@ public class ExperimentActivity extends Activity {
 
     private void init() {
         mImageView = (ExperimentImageView) findViewById(R.id.experimentView);
-        PointsView pointsView = new PointsView(this);
-        pointsView.setBackgroundResource(R.drawable.deadpool);
         Bitmap bitmap = getPointsBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.map).copy(Bitmap.Config.ARGB_8888, true));
         mImageView.setPointsInfo(mPointsInfo);
         mImageView.setImageBitmap(bitmap);
     }
 
+    /**
+     * 绘制散点图
+     * @param bitmap
+     * @return
+     */
     private Bitmap getPointsBitmap(Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();

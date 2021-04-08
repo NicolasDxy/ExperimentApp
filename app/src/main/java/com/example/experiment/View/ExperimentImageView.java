@@ -19,13 +19,14 @@ import android.widget.OverScroller;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
+import com.example.experiment.Interface.ImageChangeListener;
 import com.example.experiment.data.PointsInfo;
 import com.example.experiment.data.SinglePoint;
 
 
 public class ExperimentImageView extends AppCompatImageView implements ViewTreeObserver.OnGlobalLayoutListener {
 
-    public static final float POSITION_OFFSET = 800;
+    public static final float POSITION_OFFSET = 50;
 
     private PointsInfo mPointsInfo;
 
@@ -60,6 +61,8 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
     private Paint mPointInfoPaint;
     private Paint mPointPositionPaint;
 
+    private ImageChangeListener mListener;
+
     public ExperimentImageView(Context context) {
         this(context, null);
     }
@@ -72,7 +75,7 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
         super(context, attrs, defStyleAttr);
         mPointInfoPaint = new Paint();
         mPointInfoPaint.setColor(Color.WHITE);
-        mPointInfoPaint.setTextSize(50);
+        mPointInfoPaint.setTextSize(100);
         mPointInfoPaint.setStyle(Paint.Style.FILL);
 
         mPointPositionPaint = new Paint();
@@ -83,6 +86,7 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
         setScaleType(ScaleType.MATRIX);
 
         scroller = new OverScroller(context);
+        scroller.setFriction(0.08f);
         mScaleMatrix = new Matrix();
         //手势缩放
         mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGestureDetector.SimpleOnScaleGestureListener() {
@@ -107,6 +111,7 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
                 onTranslationImage(-distanceX, -distanceY);
                 return true;
             }
+
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
@@ -139,7 +144,7 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
                     translationAnimation.end();
 
                 translationAnimation = ObjectAnimator.ofFloat(0, 1);
-                translationAnimation.setDuration(500);
+                translationAnimation.setDuration(600);
                 translationAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
@@ -171,6 +176,10 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
             }
         });
 
+    }
+
+    public void setImageChangeListener(ImageChangeListener listener) {
+        mListener = listener;
     }
 
     public void setPointsInfo(PointsInfo pointsInfo) {
@@ -365,10 +374,34 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (getScale() == mMaxScale) {
+        if (getScale() >= mMaxScale) {
             showPointNum(canvas);
         }
         updatePointsPosition(canvas);
+        if (mListener != null) {
+            float[][] imagePosition = getImagePoint();
+            mListener.onImageChange(imagePosition[0], imagePosition[1]);
+        }
+    }
+
+    /**
+     * 获取当前屏幕左上角和右下角在bitmap的坐标
+     *
+     * @return
+     */
+    private float[][] getImagePoint() {
+        // 目标点的坐标
+        float[] start = new float[2];
+        float[] end = new float[2];
+        // 创建一个逆矩阵
+        Matrix inverseMatrix = new Matrix();
+        // 求逆，逆矩阵被赋值
+        mScaleMatrix.invert(inverseMatrix);
+        // 通过逆矩阵映射得到目标点的值
+        inverseMatrix.mapPoints(start, new float[]{0, 0});
+        inverseMatrix.mapPoints(end, new float[]{getRight(), getBottom()});
+        // 判断dstX, dstY在Bitmap上的位置即可
+        return new float[][]{start, end};
     }
 
     /**
@@ -377,24 +410,16 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
      * @param canvas
      */
     private void showPointNum(Canvas canvas) {
-        // 目标点的坐标
-        float start[] = new float[2];
-        float end[] = new float[2];
-        // 创建一个逆矩阵
-        Matrix inverseMatrix = new Matrix();
-        // 求逆，逆矩阵被赋值
-        mScaleMatrix.invert(inverseMatrix);
-        // 通过逆矩阵映射得到目标点的值
-        inverseMatrix.mapPoints(start, new float[]{0, 0});
-        inverseMatrix.mapPoints(end, new float[]{getRight(), getBottom()});
-        // 判断dstX, dstY在Bitmap上的位置即可
-
-        float paintPoint[] = new float[2];
+        float[][] imagePosition = getImagePoint();
+        pnImageChange(imagePosition[0], imagePosition[1]);
+        float[] start = imagePosition[0];
+        float[] end = imagePosition[1];
+        float[] paintPoint = new float[2];
         for (SinglePoint point : mPointsInfo.mPointsArray) {
             if (point.mPixelX >= start[0] && point.mPixelX <= end[0]
                     && point.mPixelY >= start[1] && point.mPixelY <= end[1]) {
                 mScaleMatrix.mapPoints(paintPoint, new float[]{point.mPixelX, point.mPixelY});
-                canvas.drawText(point.mName + "=" + point.mNum, paintPoint[0] - SinglePoint.RADIUS, paintPoint[1], mPointInfoPaint);
+                canvas.drawText(point.mName + "=" + point.mNum, paintPoint[0] - SinglePoint.RADIUS * getScale() * 3 / 5, paintPoint[1] + 25, mPointInfoPaint);
             }
         }
     }
@@ -402,27 +427,44 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
     private void updatePointsPosition(Canvas canvas) {
         int centerX = getWidth() / 2;
         int centerY = getHeight() / 2;
-        // 目标点的坐标
-        float start[] = new float[2];
-        float end[] = new float[2];
-        // 创建一个逆矩阵
-        Matrix inverseMatrix = new Matrix();
-        // 求逆，逆矩阵被赋值
-        mScaleMatrix.invert(inverseMatrix);
-        // 通过逆矩阵映射得到目标点的值
-        inverseMatrix.mapPoints(start, new float[]{0, 0});
-        inverseMatrix.mapPoints(end, new float[]{getRight(), getBottom()});
-        // 判断dstX, dstY在Bitmap上的位置即可
-
-        float paintPoint[] = new float[2];
+        float[][] imagePosition = getImagePoint();
+        pnImageChange(imagePosition[0], imagePosition[1]);
+        float[] start = imagePosition[0];
+        float[] end = imagePosition[1];
+        float[] paintPoint = new float[2];
         for (SinglePoint point : mPointsInfo.mPointsArray) {
             if (!(point.mPixelX >= start[0] && point.mPixelX <= end[0]
                     && point.mPixelY >= start[1] && point.mPixelY <= end[1])) {
+                float radius = 0;
                 mScaleMatrix.mapPoints(paintPoint, new float[]{point.mPixelX, point.mPixelY});
-                float radius = (float) Math.sqrt(Math.pow(paintPoint[0] - centerX, 2)
-                        + Math.pow(paintPoint[1] - centerY, 2)) - POSITION_OFFSET;
-                canvas.drawCircle(paintPoint[0] - SinglePoint.RADIUS, paintPoint[1], radius, mPointPositionPaint);
+                if (point.mPixelX < start[0]) {
+                    radius = Math.abs(start[0] - point.mPixelX);
+                    if (point.mPixelY < start[1]) {
+                        radius = (float) Math.sqrt(Math.pow(point.mPixelY - start[1], 2) + Math.pow(radius, 2));
+                    } else if (point.mPixelY > end[1]) {
+                        radius = (float) Math.sqrt(Math.pow(point.mPixelY - end[1], 2) + Math.pow(radius, 2));
+                    }
+                } else if (point.mPixelX > end[0]) {
+                    radius = Math.abs(end[0] - point.mPixelX);
+                    if (point.mPixelY < start[1]) {
+                        radius = (float) Math.sqrt(Math.pow(point.mPixelY - start[1], 2) + Math.pow(radius, 2));
+                    } else if (point.mPixelY > end[1]) {
+                        radius = (float) Math.sqrt(Math.pow(point.mPixelY - end[1], 2) + Math.pow(radius, 2));
+                    }
+                } else if (point.mPixelY < start[1]) {
+                    radius = Math.abs(point.mPixelY - start[1]);
+                } else if (point.mPixelY > end[1]) {
+                    radius = Math.abs(point.mPixelY - end[1]);
+                }
+                radius = radius * getScale() + POSITION_OFFSET;
+                canvas.drawCircle(paintPoint[0], paintPoint[1], radius, mPointPositionPaint);
             }
+        }
+    }
+
+    public void pnImageChange(float[] start, float[] end) {
+        if (mListener != null) {
+            mListener.onImageChange(start, end);
         }
     }
 
