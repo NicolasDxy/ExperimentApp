@@ -7,6 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
@@ -19,6 +21,7 @@ public class ArcExperimentActivity extends Activity {
 
     private ExperimentImageView mImageView;
     private PointsInfo mPointsInfo;
+    private Button mButton;
 
     public ArcExperimentActivity() {
         mPointsInfo = new PointsInfo();
@@ -32,10 +35,18 @@ public class ArcExperimentActivity extends Activity {
     }
 
     private void init() {
-        mImageView = (ExperimentImageView) findViewById(R.id.experimentView);
+        mImageView = findViewById(R.id.experimentView);
         Bitmap bitmap = getPointsBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.map).copy(Bitmap.Config.ARGB_8888, true));
         mImageView.setPointsInfo(mPointsInfo);
+        mImageView.setShowArc(true);
         mImageView.setImageBitmap(bitmap);
+        mButton = findViewById(R.id.submitBtn);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     /**
@@ -56,5 +67,4 @@ public class ArcExperimentActivity extends Activity {
         }
         return bitmap;
     }
-
 }

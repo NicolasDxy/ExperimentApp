@@ -15,7 +15,7 @@ public class PointsInfo {
     public void initPoints(int pointNum, int maxWid, int maxHeight) {
         Random r = new Random();
         for (int i = 0; i < pointNum; i++) {
-            mPointsArray.add(new SinglePoint(SinglePoint.RADIUS + r.nextInt(maxWid - SinglePoint.RADIUS), SinglePoint.RADIUS + r.nextInt(maxHeight - SinglePoint.RADIUS), r.nextInt(100), POINT_NAME[i]));
+            mPointsArray.add(new SinglePoint(SinglePoint.RADIUS * 2 + r.nextInt(maxWid - SinglePoint.RADIUS * 2), SinglePoint.RADIUS * 2 + r.nextInt(maxHeight - SinglePoint.RADIUS * 2), r.nextInt(100), POINT_NAME[i]));
         }
     }
 }

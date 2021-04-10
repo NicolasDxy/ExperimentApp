@@ -63,6 +63,8 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
 
     private ImageChangeListener mListener;
 
+    private boolean mShowArc;
+
     public ExperimentImageView(Context context) {
         this(context, null);
     }
@@ -184,6 +186,10 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
 
     public void setPointsInfo(PointsInfo pointsInfo) {
         mPointsInfo = pointsInfo;
+    }
+
+    public void setShowArc(boolean ifShow) {
+        mShowArc = ifShow;
     }
 
     @Override
@@ -377,7 +383,9 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
         if (getScale() >= mMaxScale) {
             showPointNum(canvas);
         }
-        updatePointsPosition(canvas);
+        if (mShowArc) {
+            updatePointsPosition(canvas);
+        }
         if (mListener != null) {
             float[][] imagePosition = getImagePoint();
             mListener.onImageChange(imagePosition[0], imagePosition[1]);
@@ -411,7 +419,6 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
      */
     private void showPointNum(Canvas canvas) {
         float[][] imagePosition = getImagePoint();
-        pnImageChange(imagePosition[0], imagePosition[1]);
         float[] start = imagePosition[0];
         float[] end = imagePosition[1];
         float[] paintPoint = new float[2];
@@ -425,10 +432,7 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
     }
 
     private void updatePointsPosition(Canvas canvas) {
-        int centerX = getWidth() / 2;
-        int centerY = getHeight() / 2;
         float[][] imagePosition = getImagePoint();
-        pnImageChange(imagePosition[0], imagePosition[1]);
         float[] start = imagePosition[0];
         float[] end = imagePosition[1];
         float[] paintPoint = new float[2];
@@ -462,12 +466,6 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
         }
     }
 
-    public void pnImageChange(float[] start, float[] end) {
-        if (mListener != null) {
-            mListener.onImageChange(start, end);
-        }
-    }
-
 
     /**
      * 缩放动画
@@ -493,38 +491,6 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
         });
 
         mAnimator.start();
-    }
-
-
-    //返回双击后改变的大小比例(我们希望缩放误差在deviation范围内)
-    private float getDoubleDrowScale() {
-        float deviation = 0.05f;
-        float drowScale = 1.0f;
-        float scale = getScale();
-
-        if (Math.abs(mInitScale - scale) < deviation)
-            scale = mInitScale;
-        if (Math.abs(mMidScale - scale) < deviation)
-            scale = mMidScale;
-        if (Math.abs(mMaxScale - scale) < deviation)
-            scale = mMaxScale;
-
-        if (scale != mMidScale) {
-            //当前大小不等于mMidScale,则调整到mMidScale
-            drowScale = mMidScale;
-            isEnlarge = scale < mMidScale;
-        } else {
-            //如果等于mMidScale，则判断放大或者缩小
-            //判断是放大或者缩小，如果上次是放大，则继续放大，缩小则继续缩小
-            if (isEnlarge) {
-                //放大
-                drowScale = mMaxScale;
-            } else {
-                //缩小
-                drowScale = mInitScale;
-            }
-        }
-        return drowScale;
     }
 
 

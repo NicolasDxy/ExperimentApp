@@ -13,6 +13,7 @@ import com.example.experiment.R;
 public class EntranceActivity extends Activity implements View.OnClickListener {
 
     private Button mExpBtn1;
+    private Button mExpBtn2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -23,8 +24,10 @@ public class EntranceActivity extends Activity implements View.OnClickListener {
 
 
     private void init() {
-        mExpBtn1 = (Button) findViewById(R.id.experimentBtn1);
+        mExpBtn1 = findViewById(R.id.experimentBtn1);
         mExpBtn1.setOnClickListener(this);
+        mExpBtn2 = findViewById(R.id.experimentBtn2);
+        mExpBtn2.setOnClickListener(this);
     }
 
 
@@ -32,9 +35,11 @@ public class EntranceActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.experimentBtn1:
-                Intent intent = new Intent(this, ArcExperimentActivity.class);
-                startActivity(intent);
-
+                startActivity(new Intent(this, ArcExperimentActivity.class));
+                break;
+            case R.id.experimentBtn2:
+                startActivity(new Intent(this, OverviewExperimentActivity.class));
+                break;
         }
     }
 }

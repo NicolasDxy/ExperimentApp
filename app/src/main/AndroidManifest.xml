@@ -16,6 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activity.ArcExperimentActivity"/>
+        <activity android:name=".Activity.OverviewExperimentActivity"/>
     </application>
 
 </manifest>

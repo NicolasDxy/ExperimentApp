@@ -2,13 +2,32 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center">
-<Button
-    android:id="@+id/experimentBtn1"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="experiment1"
-    />
+    android:gravity="center"
+    android:orientation="vertical">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请选择实验组别"
+        android:textSize="30dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+    <Button
+        android:id="@+id/experimentBtn1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Halo组" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+    <Button
+        android:id="@+id/experimentBtn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="O+D组" />
 </LinearLayout>
