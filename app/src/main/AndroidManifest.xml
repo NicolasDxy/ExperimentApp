@@ -17,6 +17,8 @@
         </activity>
         <activity android:name=".Activity.ArcExperimentActivity"/>
         <activity android:name=".Activity.OverviewExperimentActivity"/>
+        <activity android:name=".Activity.ExperimentEntranceActivity"/>
+        <activity android:name=".Activity.RecordActivity"/>
     </application>
 
 </manifest>

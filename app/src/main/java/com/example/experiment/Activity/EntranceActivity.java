@@ -9,6 +9,7 @@ import android.widget.Button;
 import androidx.annotation.Nullable;
 
 import com.example.experiment.R;
+import com.example.experiment.data.ExperimentHelper;
 
 public class EntranceActivity extends Activity implements View.OnClickListener {
 
@@ -28,6 +29,7 @@ public class EntranceActivity extends Activity implements View.OnClickListener {
         mExpBtn1.setOnClickListener(this);
         mExpBtn2 = findViewById(R.id.experimentBtn2);
         mExpBtn2.setOnClickListener(this);
+        ExperimentHelper.init(getResources());
     }
 
 
@@ -35,10 +37,14 @@ public class EntranceActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.experimentBtn1:
-                startActivity(new Intent(this, ArcExperimentActivity.class));
+                ExperimentHelper.setExperimentType(ExperimentHelper.ExperimentType.EXPERIMENT_TYPE_ARC);
+                startActivity(new Intent(this, ExperimentEntranceActivity.class));
+                finish();
                 break;
             case R.id.experimentBtn2:
-                startActivity(new Intent(this, OverviewExperimentActivity.class));
+                ExperimentHelper.setExperimentType(ExperimentHelper.ExperimentType.EXPERIMENT_TYPE_OVERVIEW);
+                startActivity(new Intent(this, ExperimentEntranceActivity.class));
+                finish();
                 break;
         }
     }

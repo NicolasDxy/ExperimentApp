@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+<LinearLayout
+    android:id="@+id/recordLayout"
+    android:layout_width="match_parent"
+    android:layout_height="630dp"
+    android:layout_marginBottom="50dp"
+    android:orientation="vertical"
+    android:gravity="center">
+
+</LinearLayout>
+    <Button
+        android:id="@+id/submitBtn"
+        android:text="提交"
+        android:layout_width="100dp"
+        android:layout_height="50dp"/>
+</LinearLayout>

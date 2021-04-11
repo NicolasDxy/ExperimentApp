@@ -1,34 +1,28 @@
 package com.example.experiment.Activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
 import com.example.experiment.R;
 import com.example.experiment.View.ExperimentImageView;
 import com.example.experiment.View.OverviewImageView;
-import com.example.experiment.data.PointsInfo;
+import com.example.experiment.data.ExperimentHelper;
 import com.example.experiment.data.SinglePoint;
 
 public class OverviewExperimentActivity extends Activity {
 
     private ExperimentImageView mImageView;
     private OverviewImageView mOverviewView;
-    private PointsInfo mPointsInfo;
     private Button mButton;
-
-    public OverviewExperimentActivity() {
-        mPointsInfo = new PointsInfo();
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,9 +32,11 @@ public class OverviewExperimentActivity extends Activity {
     }
 
     private void init() {
+        ExperimentHelper.updatePointsInfo();
+
         mImageView = findViewById(R.id.ex2_imageview);
-        Bitmap bitmap = getPointsBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.map).copy(Bitmap.Config.ARGB_8888, true));
-        mImageView.setPointsInfo(mPointsInfo);
+        Bitmap bitmap = getPointsBitmap(ExperimentHelper.getBitmap());
+        mImageView.setPointsInfo(ExperimentHelper.getPointsInfo());
         mImageView.setShowArc(false);
         mImageView.setImageBitmap(bitmap);
 
@@ -50,11 +46,12 @@ public class OverviewExperimentActivity extends Activity {
         mImageView.setImageChangeListener(mOverviewView);
         mOverviewView.setClickable(false);
 
-        mButton = findViewById(R.id.submitBtn);
+        mButton = findViewById(R.id.recordBtn);
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(OverviewExperimentActivity.this, RecordActivity.class));
+                finish();
             }
         });
     }
@@ -66,14 +63,11 @@ public class OverviewExperimentActivity extends Activity {
      * @return
      */
     private Bitmap getPointsBitmap(Bitmap bitmap) {
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        mPointsInfo.initPoints(6, width, height);
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
         paint.setColor(Color.RED);
         paint.setAntiAlias(true);
-        for (SinglePoint point : mPointsInfo.mPointsArray) {
+        for (SinglePoint point : ExperimentHelper.getPointsInfo().mPointsArray) {
             canvas.drawCircle(point.mPixelX, point.mPixelY, SinglePoint.RADIUS, paint);
         }
         return bitmap;
