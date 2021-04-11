@@ -20,6 +20,7 @@ import android.widget.OverScroller;
 import androidx.appcompat.widget.AppCompatImageView;
 
 import com.example.experiment.Interface.ImageChangeListener;
+import com.example.experiment.data.ExperimentHelper;
 import com.example.experiment.data.PointsInfo;
 import com.example.experiment.data.SinglePoint;
 
@@ -116,6 +117,9 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+
+                velocityX = velocityX / 2;
+                velocityY = velocityY / 2;
 
                 //滑动惯性处理
                 mCurrentX = (int) e2.getX();
@@ -259,6 +263,9 @@ public class ExperimentImageView extends AppCompatImageView implements ViewTreeO
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            ExperimentHelper.recordData.touchTime++;
+        }
         return mScaleGestureDetector.onTouchEvent(event) |
                 gestureDetector.onTouchEvent(event);
     }

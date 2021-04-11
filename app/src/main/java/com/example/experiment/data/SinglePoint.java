@@ -1,7 +1,7 @@
 package com.example.experiment.data;
 
 public class SinglePoint {
-    public static final int RADIUS = 50;
+    public static final int RADIUS = 30;
     public static final int RECORD_HEIGHT = 70;
     public static final int RECORD_WIDTH = 300;
     public float mPixelX;

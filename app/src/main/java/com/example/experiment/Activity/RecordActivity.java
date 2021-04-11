@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.example.experiment.DensityUtils;
+import com.example.experiment.Utils.DensityUtils;
 import com.example.experiment.R;
 import com.example.experiment.data.ExperimentHelper;
 import com.example.experiment.data.SinglePoint;

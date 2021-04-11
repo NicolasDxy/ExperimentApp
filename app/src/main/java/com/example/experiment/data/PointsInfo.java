@@ -24,13 +24,13 @@ public class PointsInfo {
         }
     }
 
-    public String printPointsRecord() {
+    public float getPointsAccuracy() {
         int correct = 0;
         for (SinglePoint point : mPointsArray) {
             if (point.mNum == point.mRecord) {
                 correct++;
             }
         }
-        return "accuracy:" + ((float)correct / (float)mPointsArray.size());
+        return ((float)correct / (float)mPointsArray.size());
     }
 }

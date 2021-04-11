@@ -6,8 +6,8 @@
     android:gravity="center">
     <FrameLayout
         android:id="@+id/frameLayout"
-        android:layout_width="320dp"
-        android:layout_height="704dp">
+        android:layout_width="380dp"
+        android:layout_height="740dp">
         <com.example.experiment.View.ExperimentImageView
             android:id="@+id/experimentView"
             android:layout_width="match_parent"
