@@ -109,7 +109,7 @@ public class ExperimentHelper {
     private static ExperimentStatus experimentStatus;
     private static PointsInfo pointsInfo;
     private static Bitmap bitmap;
-    private static TestCount testCount;
+    public static TestCount testCount;
     private static ArrayList<String> recordDataArray;
     public static RecordData recordData;
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日_HH:mm:ss");
@@ -192,8 +192,6 @@ public class ExperimentHelper {
                 recordData = new RecordData();
                 recordTestData(context);
                 recordDataArray = new ArrayList<>();
-
-                //TODO：打开浏览器
                 intent = new Intent(context, EntranceActivity.class);
             }
         } else {
